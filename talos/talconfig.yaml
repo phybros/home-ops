@@ -1,0 +1,93 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
+---
+clusterName: kubernetes
+
+talosVersion: "${talosVersion}"
+kubernetesVersion: "${kubernetesVersion}"
+
+endpoint: https://192.168.86.240:6443
+additionalApiServerCertSans: &sans
+  - "127.0.0.1"
+  - "192.168.86.240"
+additionalMachineCertSans: *sans
+
+clusterPodNets: ["10.42.0.0/16"]
+clusterSvcNets: ["10.43.0.0/16"]
+
+# Disable built-in CNI to use Cilium
+cniConfig:
+  name: none
+
+nodes:
+  - hostname: "talos1"
+    ipAddress: "192.168.86.235"
+    installDisk: "/dev/disk/by-id/ata-Crucial_CT256MX100SSD1_15040E82D911"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/08086db1d88ea52b2e873f0b0c64562af7ae98f6ed83da5ee478871bbe52abd6
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "88:a4:c2:09:bf:bd"
+        dhcp: false
+        addresses:
+          - "192.168.86.235/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "192.168.86.1"
+        mtu: 1500
+        vip:
+          ip: "192.168.86.240"
+  - hostname: "talos2"
+    ipAddress: "192.168.86.236"
+    installDisk: "/dev/disk/by-id/ata-GIGABYTE_GP-GSTFS31256GTND_SN193108914327"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/08086db1d88ea52b2e873f0b0c64562af7ae98f6ed83da5ee478871bbe52abd6
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "84:a9:38:f8:76:2d"
+        dhcp: false
+        addresses:
+          - "192.168.86.236/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "192.168.86.1"
+        mtu: 1500
+        vip:
+          ip: "192.168.86.240"
+  - hostname: "talos3"
+    ipAddress: "192.168.86.237"
+    installDisk: "/dev/disk/by-id/ata-SanDisk_SD9SB8W-256G-1006_183893800324"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/08086db1d88ea52b2e873f0b0c64562af7ae98f6ed83da5ee478871bbe52abd6
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "88:a4:c2:05:08:1f"
+        dhcp: false
+        addresses:
+          - "192.168.86.237/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "192.168.86.1"
+        mtu: 1500
+        vip:
+          ip: "192.168.86.240"
+
+# Global patches
+patches:
+  - "@./patches/global/machine-files.yaml"
+  - "@./patches/global/machine-kubelet.yaml"
+  - "@./patches/global/machine-network.yaml"
+  - "@./patches/global/machine-sysctls.yaml"
+  - "@./patches/global/machine-time.yaml"
+
+# Controller patches
+controlPlane:
+  patches:
+    - "@./patches/controller/admission-controller-patch.yaml"
+    - "@./patches/controller/cluster.yaml"
+
