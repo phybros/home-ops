@@ -18,6 +18,10 @@ spec:
   path: ./kubernetes/apps/rook-ceph/rook-ceph/app
   prune: true
   retryInterval: 2m
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -55,8 +59,9 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/rook-ceph/rook-ceph/cluster
   postBuild:
-    substitute:
-      APP: *app
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:
