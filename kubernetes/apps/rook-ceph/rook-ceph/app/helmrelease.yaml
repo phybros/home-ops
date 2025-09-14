@@ -5,7 +5,7 @@ kind: HelmRelease
 metadata:
   name: rook-ceph
 spec:
-  interval: 1h
+  interval: 2m
   timeout: 15m
   chartRef:
     kind: OCIRepository
