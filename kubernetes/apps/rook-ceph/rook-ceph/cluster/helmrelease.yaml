@@ -30,7 +30,7 @@ spec:
             namespace: kube-system
             sectionName: https
         host:
-          name: rook.${SECRET_DOMAIN}
+          name: "rook.${SECRET_DOMAIN}"
           path: /
           pathType: PathPrefix
     cephClusterSpec:
