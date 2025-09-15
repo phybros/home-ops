@@ -24,7 +24,7 @@ nodes:
     installDisk: "/dev/disk/by-id/ata-Crucial_CT256MX100SSD1_15040E82D911"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/4b3cd373a192c8469e859b7a0cfbed3ecc3577c4a2d346a37b0aeff9cd17cdb0
+    talosImageURL: factory.talos.dev/installer/af0f65d00d74c07ae1ddb7c73813831219d051dcca3725eb00b0cc91bc767ec2
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -43,7 +43,7 @@ nodes:
     installDisk: "/dev/disk/by-id/ata-GIGABYTE_GP-GSTFS31256GTND_SN193108914327"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/4b3cd373a192c8469e859b7a0cfbed3ecc3577c4a2d346a37b0aeff9cd17cdb0
+    talosImageURL: factory.talos.dev/installer/af0f65d00d74c07ae1ddb7c73813831219d051dcca3725eb00b0cc91bc767ec2
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -62,7 +62,7 @@ nodes:
     installDisk: "/dev/disk/by-id/ata-SanDisk_SD9SB8W-256G-1006_183893800324"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/4b3cd373a192c8469e859b7a0cfbed3ecc3577c4a2d346a37b0aeff9cd17cdb0
+    talosImageURL: factory.talos.dev/installer/af0f65d00d74c07ae1ddb7c73813831219d051dcca3725eb00b0cc91bc767ec2
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
