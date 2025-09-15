@@ -1,0 +1,4 @@
+machine:
+  nodeLabels:
+    # the nodes all have this, just hardcode it
+    intel.feature.node.kubernetes.io/gpu: "true"
