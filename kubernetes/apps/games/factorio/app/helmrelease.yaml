@@ -1,0 +1,70 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app factorio
+  namespace: games
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+
+  values:
+    controllers:
+      factorio:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          factorio:
+            env:
+              TZ: "America/New_York"
+              SAVE_NAME: factorio-24mc
+              LOAD_LATEST_SAVE: false
+              BIND: "0.0.0.0"
+            image:
+              repository: factoriotools/factorio
+              tag: stable-2.0.66
+    service:
+      app:
+        type: LoadBalancer
+        loadBalancerIP: 192.168.86.227
+        externalTrafficPolicy: Local
+        controller: factorio
+        ports:
+          gameudp:
+            port: 34197
+            protocol: UDP
+
+    metrics:
+      enabled: true
+      serviceMonitor:
+        interval: 3m
+        scrapeTimeout: 1m
+      prometheusRule:
+        enabled: true
+      exporter:
+        env:
+          port: 9794
+          additionalMetrics: true
+          unknownQueueItems: false
+
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /factorio
