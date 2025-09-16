@@ -4,7 +4,7 @@ kind: HelmRelease
 metadata:
   name: &app factorio
 spec:
-  interval: 1h
+  interval: 2m
   chartRef:
     kind: OCIRepository
     name: app-template
