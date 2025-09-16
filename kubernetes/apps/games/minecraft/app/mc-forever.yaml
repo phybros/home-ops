@@ -1,0 +1,50 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app mc-forever
+spec:
+  interval: 5m
+  timeout: 15m
+  chartRef:
+    kind: OCIRepository
+    name: minecraft-server-charts
+  values:
+    replicaCount: 1
+    resources:
+      requests:
+        memory: 2Gi
+      limits:
+        memory: 6Gi
+    minecraftServer:
+      eula: "TRUE"
+      type: "PAPER"
+      version: "1.21.8"
+      gameMode: survival
+      levelSeed: "foreverforever"
+      overrideServerProperties: true
+      maxPlayers: 2
+      whitelist: "phybros,gimgam5000"
+      ops: "phybros"
+      viewDistance: 10
+      difficulty: "normal"
+      icon: "https://minecraft.wiki/images/Creeper_Head_%28S%29_JE1.png"
+      motd: "Hello!"
+      memory: 5120M
+      serviceType: LoadBalancer
+      loadBalancerIP: 192.168.86.225
+      extraPorts:
+        - name: map
+          containerPort: 8100
+          protocol: TCP
+          service:
+            enabled: true
+            type: LoadBalancer
+            loadBalancerIP: 192.168.86.226
+            port: 8100
+            ingress:
+             enabled: false
+    persistence:
+      dataDir:
+        enabled: true
+        existingClaim: *app
