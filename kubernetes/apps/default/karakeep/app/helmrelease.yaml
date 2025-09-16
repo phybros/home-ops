@@ -128,7 +128,7 @@ spec:
         rules:
           - backendRefs:
               - identifier: app
-                port: *port
+                port: &port 3000
     persistence:
       data:
         existingClaim: *app
@@ -146,7 +146,7 @@ spec:
         controller: karakeep
         ports:
           http:
-            port: 3000
+            port: *port
       chrome:
         controller: chrome
         ports:
