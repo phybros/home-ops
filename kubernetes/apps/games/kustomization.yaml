@@ -7,4 +7,4 @@ components:
   - ../../components/common
 resources:
   - ./factorio/ks.yaml
-  - ./minecraft/ks.yaml
+  - ./mc-forever/ks.yaml
