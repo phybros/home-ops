@@ -35,7 +35,6 @@ spec:
       serviceType: LoadBalancer
       ops: "phybros"
       loadBalancerIP: 192.168.86.229
-      externalTrafficPolicy: Local
     persistence:
       dataDir:
         enabled: true
