@@ -9,3 +9,4 @@ resources:
   - ./factorio/ks.yaml
   - ./mc-forever/ks.yaml
   - ./mc-raspberry/ks.yaml
+  - ./vintagestory/ks.yaml
