@@ -1,0 +1,42 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app mc-raspberry
+spec:
+  interval: 5m
+  timeout: 15m
+  chartRef:
+    kind: OCIRepository
+    name: minecraft-server-charts
+  values:
+    replicaCount: 1
+    resources:
+      requests:
+        memory: 2Gi
+      limits:
+        memory: 6Gi
+    minecraftServer:
+      eula: "TRUE"
+      type: "FORGE"
+      version: "1.19.2"
+      pvp: "default"
+      worldSaveName: raspberry
+      gameMode: survival
+      allowNether: true
+      difficulty: normal
+      overrideServerProperties: true
+      viewDistance: 16
+      seed: "kjhblkjhbkljgh23444444444jnjh"
+      spawnProtection: 4
+      icon: "https://cdn-icons-png.freepik.com/512/12777/12777015.png"
+      motd: "raspberry flavoured"
+      memory: 5120M
+      serviceType: LoadBalancer
+      ops: "phybros"
+      loadBalancerIP: 192.168.86.229
+      externalTrafficPolicy: Local
+    persistence:
+      dataDir:
+        enabled: true
+        existingClaim: *app
