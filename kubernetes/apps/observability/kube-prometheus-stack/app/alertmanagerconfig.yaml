@@ -10,12 +10,22 @@ spec:
     groupWait: 30s
     groupInterval: 5m
     repeatInterval: 6h
-    receiver: "null"
+    receiver: discord
     routes:
       - receiver: "null"
         matchers:
           - name: alertname
             value: InfoInhibitor
+            matchType: =
+      - receiver: "null"
+        matchers:
+          - name: alertname
+            value: Watchdog
+            matchType: =
+      - receiver: discord
+        matchers:
+          - name: severity
+            value: critical
             matchType: =
   inhibitRules:
     - equal: ["alertname", "namespace"]
@@ -29,3 +39,20 @@ spec:
           matchType: =
   receivers:
     - name: "null"
+    - name: discord
+      discordConfigs:
+        - apiURL:
+            key: webhook-url
+            name: discord-webhook-secret
+          avatarURL: https://avatars3.githubusercontent.com/u/3380462
+          title: |-
+            [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ if ne .CommonAnnotations.summary ""}}{{ .CommonAnnotations.summary }}{{ else }}{{ .CommonLabels.alertname }}{{ end }}
+          message: >-
+            {{ range .Alerts -}}
+            **Alert:** {{ .Annotations.title }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+            **Description:** {{ if ne .Annotations.description ""}}{{ .Annotations.description }}{{else}}N/A{{ end }}
+
+            **Details:**
+              {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+              {{ end }}
+            {{ end }}
