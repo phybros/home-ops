@@ -1,0 +1,7 @@
+---
+apiVersion: v1alpha1
+kind: EthernetConfig
+name: eno2
+features:
+  tx-tcp-segmentation: false
+  tx-generic-segmentation: false

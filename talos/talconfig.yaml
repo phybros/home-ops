@@ -26,6 +26,8 @@ nodes:
       secureboot: false
     talosImageURL: factory.talos.dev/installer/af0f65d00d74c07ae1ddb7c73813831219d051dcca3725eb00b0cc91bc767ec2
     controlPlane: true
+    extraManifests:
+      - "./patches/global/machine-e1000e-fix.yaml"
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "88:a4:c2:09:bf:bd"
@@ -45,6 +47,8 @@ nodes:
       secureboot: false
     talosImageURL: factory.talos.dev/installer/af0f65d00d74c07ae1ddb7c73813831219d051dcca3725eb00b0cc91bc767ec2
     controlPlane: true
+    extraManifests:
+      - "./patches/global/machine-e1000e-fix.yaml"
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "84:a9:38:f8:76:2d"
@@ -64,6 +68,8 @@ nodes:
       secureboot: false
     talosImageURL: factory.talos.dev/installer/af0f65d00d74c07ae1ddb7c73813831219d051dcca3725eb00b0cc91bc767ec2
     controlPlane: true
+    extraManifests:
+      - "./patches/global/machine-e1000e-fix.yaml"
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "88:a4:c2:05:08:1f"
