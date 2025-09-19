@@ -10,3 +10,4 @@ resources:
   - ./iperf3/ks.yaml
   - ./ollama/ks.yaml
   - ./karakeep/ks.yaml
+  - ./plex/ks.yaml
