@@ -84,6 +84,10 @@ spec:
         existingClaim: *app
         globalMounts:
           - subPath: data
+      incomplete-downloads:
+        enabled: true
+        type: emptyDir
+        sizeLimit: 150Gi
       complete-downloads:
         enabled: true
         type: custom

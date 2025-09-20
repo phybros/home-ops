@@ -37,7 +37,7 @@ nodes:
         routes:
           - network: "0.0.0.0/0"
             gateway: "192.168.86.1"
-        mtu: 1500
+        mtu: 9000
         vip:
           ip: "192.168.86.240"
   - hostname: "talos2"
@@ -58,7 +58,7 @@ nodes:
         routes:
           - network: "0.0.0.0/0"
             gateway: "192.168.86.1"
-        mtu: 1500
+        mtu: 9000
         vip:
           ip: "192.168.86.240"
   - hostname: "talos3"
@@ -79,7 +79,7 @@ nodes:
         routes:
           - network: "0.0.0.0/0"
             gateway: "192.168.86.1"
-        mtu: 1500
+        mtu: 9000
         vip:
           ip: "192.168.86.240"
 
