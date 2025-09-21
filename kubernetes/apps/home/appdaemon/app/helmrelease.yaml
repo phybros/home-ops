@@ -58,10 +58,6 @@ spec:
         ports:
           http:
             port: &port 5050
-    serviceMonitor:
-      app:
-        endpoints:
-          - port: http
     route:
       app:
         hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
