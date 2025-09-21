@@ -1,0 +1,71 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app appdaemon
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  dependsOn:
+    - name: cloudflare-tunnel
+      namespace: network
+  values:
+    controllers:
+      appdaemon:
+        containers:
+          app:
+            image:
+              repository: docker.io/acockburn/appdaemon
+              tag: 4.5.11
+            env:
+              TZ: "America/New_York"
+              HA_URL: "http://192.168.86.212:8123"
+              DASH_URL: "http://0.0.0.0:5050"
+              TOKEN: "${SECRET_APPDAEMON_TOKEN}"
+              LATITUDE: "${SECRET_LAT}"
+              LONGITUDE: "${SECRET_LNG}"
+              ELEVATION: "${SECRET_ELEVATION}"
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 256Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+    persistence:
+      config:
+        existingClaim: *app
+        globalMounts:
+          - path: /conf
+    service:
+      app:
+        ports:
+          http:
+            port: &port 5050
+    route:
+      app:
+        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
