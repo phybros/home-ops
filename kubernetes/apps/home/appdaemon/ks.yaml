@@ -22,6 +22,7 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 1Gi
+      VOLSYNC_MINUTE: "1"
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
