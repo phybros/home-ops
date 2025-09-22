@@ -30,6 +30,8 @@ spec:
             env:
               TZ: "America/New_York"
               ESPHOME_DASHBOARD_USE_PING: true
+              PLATFORMIO_CORE_DIR: .platformio
+              PLATFORMIO_GLOBALLIB_DIR: .platformioLibs
             probes:
               liveness:
                 enabled: true
