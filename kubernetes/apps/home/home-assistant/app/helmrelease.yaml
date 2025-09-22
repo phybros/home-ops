@@ -38,6 +38,13 @@ spec:
                 cpu: 10m
               limits:
                 memory: 2Gi
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
+        fsGroup: 1000
     persistence:
       config:
         existingClaim: *app
