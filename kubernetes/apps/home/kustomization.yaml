@@ -6,6 +6,7 @@ namespace: home
 components:
   - ../../components/common
 resources:
+  - ./mosquitto/ks.yaml
   - ./home-assistant/ks.yaml
   - ./appdaemon/ks.yaml
   - ./esphome/ks.yaml

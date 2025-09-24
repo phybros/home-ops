@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+    name: mosquitto-pwd
+stringData:
+    mosquitto_pwd: ENC[AES256_GCM,data:I6IxYU1a+ZadWUZsZBF3oUpfQXDz/M2LEXRQUb/bk8y0DFmzouTqcc4dwFbQpEcKP0MEaa7aZ+Ho86R6cLtIXfCTPpykUvvR5fG9cGFdAL4If2d+9zbw7OWMWl8RE7q3xxZgGaB/5jvAiQIoQF9FZLXAFVEKYKYCpo1ngMJlmXIlDwK8uv5ykWVi2skNSUE2PilioHvScQ4q9884jYmnjj7r7RS+yV8UbfJVKJrgtkhDT6h3oWbhgS3+D5VSLTXVjI4FUfSgNHQ4sFQMoARurNloGBoe83UlB84xhsL1EoelJp7QluXjV64Ae+lrc/CSkOaLFdQzJa7pnkvIDg==,iv:zRcMVK8rs76KejRVjuijc3zfI6jo6rdLB1p57COSDxE=,tag:5+strR9242tWS8ofK8vStw==,type:str]
+sops:
+    age:
+        - recipient: age1fa4w3h22pca5exw0z2hsa0syu4kley69l722gupsnnhhz76a6sqst2wgyl
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBuV1R1MU55cWprSHRsZ2xN
+            Z3p2VHI3WUtBZEFMSmZPc0FUY1dhOW5TOHhFCno1MThGQkxHV2hzUU1xbmdLVXVa
+            VHFtNTlRSTg3b2xmUC9tMklsZ2Z1Z2MKLS0tIFEzYVM3ZnlYb3ZibXMxVkxlUGVu
+            RjlhTWNKd0pMd3hIUVlNNWtkMXovUlUK1D4vpaDzABv0uOyJEloySNEPzNhkiQBD
+            JZBWerBb6cdgnwVabH05f6+DAOVMZ+mi1gPWsDlh/76Lt3WsRiq3sg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-09-24T02:51:48Z"
+    mac: ENC[AES256_GCM,data:WR/z7577njS6Yay3ISurnmvKD9zngWPlqyHDLOtjq8Co3jabE3S7/6X5HvaV3ipdT53V2GCAtEY3SoSJUfEGu+XlGkKLuKa+ij8F0vGJXMsuiaGUjGVO+qM3S5NhzranUxIiP1qzy1zTk37Pqz4w6IlWyK0wM6SDnVDBwxrahzU=,iv:yI9frfEcidvRf+9+HZJEaIDY9i4UCb6bf9sonPQVlLg=,tag:FqJMEPbjX8efw42RMzFAbA==,type:str]
+    encrypted_regex: ^(data|stringData)$
+    mac_only_encrypted: true
+    version: 3.10.2
