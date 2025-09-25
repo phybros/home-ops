@@ -55,7 +55,7 @@ spec:
               requests:
                 cpu: 100m
               limits:
-                memory: 4Gi
+                memory: 2Gi
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -84,12 +84,10 @@ spec:
         existingClaim: *app
         globalMounts:
           - subPath: data
-      complete-downloads:
+      media:
         enabled: true
         type: custom
         volumeSpec:
           nfs:
             server: 192.168.86.200
-            path: "/mergerfs/storage"
-        globalMounts:
-          - path: "/mergerfs/storage"
+            path: "/mnt/vault/media"

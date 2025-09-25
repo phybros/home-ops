@@ -78,12 +78,10 @@ spec:
     persistence:
       config:
         existingClaim: *app
-      complete-downloads:
+      media:
         enabled: true
         type: custom
         volumeSpec:
           nfs:
             server: 192.168.86.200
-            path: "/mergerfs/storage"
-        globalMounts:
-          - path: "/mergerfs/storage"
+            path: "/mnt/vault/media"

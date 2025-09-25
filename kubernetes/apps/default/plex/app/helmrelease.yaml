@@ -48,7 +48,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m
@@ -85,7 +85,7 @@ spec:
         volumeSpec:
           nfs:
             server: 192.168.86.200
-            path: "/mergerfs/storage/media"
+            path: "/mnt/vault/media"
         globalMounts:
           - path: /media
             readOnly: true
