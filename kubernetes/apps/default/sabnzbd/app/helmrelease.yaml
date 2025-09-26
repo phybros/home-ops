@@ -91,5 +91,3 @@ spec:
           nfs:
             server: 192.168.86.200
             path: "/mnt/vault/media"
-      incomplete:
-        type: emptyDir
