@@ -79,7 +79,7 @@ spec:
               requests:
                 cpu: 10m
               limits:
-                memory: 1Gi
+                memory: 512Mi
 
       meilisearch:
         annotations:
@@ -91,6 +91,10 @@ spec:
                 - labelSelector:
                     matchExpressions:
                       - key: app.kubernetes.io/name
+                        operator: In
+                        values:
+                          - karakeep
+                      - key: app.kubernetes.io/controller
                         operator: In
                         values:
                           - karakeep
@@ -110,7 +114,7 @@ spec:
               requests:
                 cpu: 10m
               limits:
-                memory: 1Gi
+                memory: 256Mi
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
