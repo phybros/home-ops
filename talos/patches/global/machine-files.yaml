@@ -16,4 +16,3 @@ machine:
         hard=True
         nconnect=16
         noatime=True
-        async=True
