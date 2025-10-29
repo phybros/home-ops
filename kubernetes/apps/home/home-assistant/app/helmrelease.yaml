@@ -58,8 +58,8 @@ spec:
           http:
             port: 8123
           homekittcp:
-            port: 21064
-            targetPort: 21064
+            port: 21063
+            targetPort: 21063
           homekittcp2:
             port: 21065
             targetPort: 21065
