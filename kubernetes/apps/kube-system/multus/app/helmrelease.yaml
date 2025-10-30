@@ -42,7 +42,7 @@ spec:
           init-cni-plugins:
             image:
               repository: ghcr.io/angelnu/cni-plugins
-              tag: 1.6.1@sha256:da6dac4701c6e670abe9f82b66e8c48c56a76e9dfa2f7f96fa85e2a654e5c3ca
+              tag: 1.8.0@sha256:afc03ea5df3cf5c8ec5fecc0a77feb49135dc35e1679f949f1fcff28c0d23d07
             command:
               - sh
               - -c
