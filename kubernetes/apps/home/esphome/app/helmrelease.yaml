@@ -36,8 +36,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/esphome/esphome
-              tag: 2025.10.3
+              repository: ghcr.io/home-operations/esphome
+              tag: 2025.10.3@sha256:e58f0f9edd1dce973bd0c665db512171aecf65b74baef0ad1d0bebc5842a799b
             env:
               TZ: "America/New_York"
               ESPHOME_DASHBOARD_USE_PING: true
@@ -45,11 +45,11 @@ spec:
               PLATFORMIO_GLOBALLIB_DIR: .platformioLibs
             probes:
               liveness:
-                enabled: false
+                enabled: true
               readiness:
-                enabled: false
+                enabled: true
               startup:
-                enabled: false
+                enabled: true
             securityContext:
               allowPrivilegeEscalation: false
               capabilities: { drop: ["ALL"] }
