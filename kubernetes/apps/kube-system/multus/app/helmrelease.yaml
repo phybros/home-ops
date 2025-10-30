@@ -8,7 +8,7 @@ spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: multus
+    name: app-template
   values:
     controllers:
       multus:
