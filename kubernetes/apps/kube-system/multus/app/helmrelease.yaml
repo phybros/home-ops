@@ -3,88 +3,95 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app multus
+  name: multus
 spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: app-template
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
+    name: multus
   values:
     controllers:
       multus:
         type: daemonset
-        strategy: RollingUpdate
+        initContainers:
+          cni-plugins:
+            image:
+              repository: ghcr.io/home-operations/cni-plugins
+              tag: 1.8.0@sha256:ce64a071c3c0f2e8c4620d588e45e36010ab05f63c4dd484b568c39e9346beac
         containers:
-          app:
+          multus:
             image:
               repository: ghcr.io/k8snetworkplumbingwg/multus-cni
-              tag: v4.2.2@sha256:2e8c2cfa47c537d9179ef0125cfcdab7e8f9bc0a2880fceac1d12e5f80fc9f4d
+              tag: v4.2.2@sha256:7591a27cd28eeafd6dfb197618b06dabd9446a7026164b9b21fee67adc925761
             args:
-              - --multus-conf-file=auto
-              - --multus-kubeconfig-file-host=/var/lib/rancher/k3s/agent/etc/cni/net.d/multus.d/multus.kubeconfig
-              - --cleanup-config-on-exit=true
+              - --cleanup-config-on-exit
+              - --multus-cni-conf-dir=/tmp
             resources:
               requests:
                 cpu: 10m
-                memory: 64Mi
               limits:
                 memory: 512Mi
             securityContext:
-              privileged: true
-        initContainers:
-          init-cni-plugins:
-            image:
-              repository: ghcr.io/angelnu/cni-plugins
-              tag: 1.6.1@sha256:da6dac4701c6e670abe9f82b66e8c48c56a76e9dfa2f7f96fa85e2a654e5c3ca
-            command:
-              - sh
-              - -c
-              - set -e -x; cp -f /cni-plugins/bin/* /host/opt/cni/bin/
-            securityContext:
-              privileged: true
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                add:
+                  - NET_ADMIN
+                drop:
+                  - ALL
     defaultPodOptions:
       hostNetwork: true
       priorityClassName: system-node-critical
       tolerations:
-        - operator: Exists
-          effect: NoSchedule
+        - key: CriticalAddonsOnly
+          operator: Exists
+    rbac:
+      roles:
+        multus:
+          type: ClusterRole
+          rules:
+            - apiGroups:
+                - k8s.cni.cncf.io
+              resources:
+                - "*"
+              verbs:
+                - "*"
+            - apiGroups:
+                - ""
+              resources:
+                - pods
+                - pods/status
+              verbs:
+                - get
+                - update
+            - apiGroups:
+                - ""
+                - events.k8s.io
+              resources:
+                - events
+              verbs:
+                - create
+                - patch
+                - update
+      bindings:
+        multus:
+          type: ClusterRoleBinding
+          roleRef:
+            identifier: multus
+          subjects:
+            - identifier: multus
+    serviceAccount:
+      multus: {}
     persistence:
-      cni:
+      etc-cni-net-d:
         type: hostPath
         hostPath: /etc/cni/net.d
         globalMounts:
           - path: /host/etc/cni/net.d
-      cnibin:
+      opt-cni-bin:
         type: hostPath
         hostPath: /opt/cni/bin
         globalMounts:
           - path: /host/opt/cni/bin
-      host-run-netns:
-        type: hostPath
-        hostPath: /run/netns
-        hostPathType: DirectoryOrCreate
-        globalMounts:
-          - path: /run/netns
-            mountPropagation: HostToContainer
-      host-var-lib-cni:
-        type: hostPath
-        hostPath: /var/lib/cni
-        hostPathType: DirectoryOrCreate
-        globalMounts:
-          - path: /var/lib/cni
-      host-var-lib-kubelet:
-        type: hostPath
-        hostPath: /var/lib/kubelet
-        hostPathType: DirectoryOrCreate
-        globalMounts:
-          - path: /var/lib/kubelet
-    serviceAccount:
-      create: true
-      name: *app
+      tmp:
+        type: emptyDir
