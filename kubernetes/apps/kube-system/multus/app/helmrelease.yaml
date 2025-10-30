@@ -25,7 +25,7 @@ spec:
           app:
             image:
               repository: ghcr.io/k8snetworkplumbingwg/multus-cni
-              tag: v4.2.2@sha256:2e8c2cfa47c537d9179ef0125cfcdab7e8f9bc0a2880fceac1d12e5f80fc9f4d
+              tag: v4.2.2@sha256:7591a27cd28eeafd6dfb197618b06dabd9446a7026164b9b21fee67adc925761
             args:
               - --multus-conf-file=auto
               - --multus-kubeconfig-file-host=/var/lib/rancher/k3s/agent/etc/cni/net.d/multus.d/multus.kubeconfig
