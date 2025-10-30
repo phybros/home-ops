@@ -29,7 +29,9 @@ spec:
             k8s.v1.cni.cncf.io/networks: |
               [{
                 "name": "macvlan-home",
-                "namespace": "kube-system"
+                "namespace": "kube-system",
+                "ips": ["192.168.86.215/24"],
+                "gateway": ["192.168.86.1"]
               }]
         containers:
           app:

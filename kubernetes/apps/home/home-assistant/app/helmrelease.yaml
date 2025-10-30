@@ -34,7 +34,8 @@ spec:
               [{
                 "name": "macvlan-home",
                 "namespace": "kube-system",
-                "ips": ["192.168.86.212"]
+                "ips": ["192.168.86.212/24"],
+                "gateway": ["192.168.86.1"]
               }]
         containers:
           app:
