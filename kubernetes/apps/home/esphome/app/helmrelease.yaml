@@ -19,9 +19,18 @@ spec:
   dependsOn:
     - name: cloudflare-tunnel
       namespace: network
+    - name: multus
+      namespace: kube-system
   values:
     controllers:
       esphome:
+        pod:
+          annotations:
+            k8s.v1.cni.cncf.io/networks: |
+              [{
+                "name": "macvlan-home",
+                "namespace": "kube-system"
+              }]
         containers:
           app:
             image:

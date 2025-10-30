@@ -19,6 +19,8 @@ spec:
   dependsOn:
     - name: cloudflare-tunnel
       namespace: network
+    - name: multus
+      namespace: kube-system
     - name: rook-ceph-cluster
       namespace: rook-ceph
   values:
@@ -26,6 +28,14 @@ spec:
       home-assistant:
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          annotations:
+            k8s.v1.cni.cncf.io/networks: |
+              [{
+                "name": "macvlan-home",
+                "namespace": "kube-system",
+                "ips": ["192.168.86.212"]
+              }]
         containers:
           app:
             image:
