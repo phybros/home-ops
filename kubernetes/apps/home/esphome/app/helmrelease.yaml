@@ -45,11 +45,11 @@ spec:
               PLATFORMIO_GLOBALLIB_DIR: .platformioLibs
             probes:
               liveness:
-                enabled: true
+                enabled: false
               readiness:
-                enabled: true
+                enabled: false
               startup:
-                enabled: true
+                enabled: false
             securityContext:
               allowPrivilegeEscalation: false
               capabilities: { drop: ["ALL"] }
