@@ -40,12 +40,9 @@ spec:
               tag: 2025.10.5@sha256:d98e2f3ae341a2548b445b55b8a57758b4472416bc2290386a33dbbaca02402a
             env:
               TZ: "America/New_York"
-              # ESPHOME_DASHBOARD_USE_PING: true
-              # PLATFORMIO_CORE_DIR: .platformio
-              # PLATFORMIO_GLOBALLIB_DIR: .platformioLibs
             probes:
               liveness: &probes
-                enabled: true
+                enabled: false
               readiness: *probes
             securityContext:
               allowPrivilegeEscalation: false
@@ -57,9 +54,6 @@ spec:
                 memory: 2Gi
     defaultPodOptions:
       securityContext:
-        # runAsNonRoot: true
-        # runAsUser: 1000
-        # runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
     persistence:
