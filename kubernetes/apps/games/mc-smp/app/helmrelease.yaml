@@ -27,7 +27,7 @@ spec:
       difficulty: normal
       overrideServerProperties: true
       viewDistance: 16
-      seed: "2859222813426854686"
+      levelSeed: "2859222813426854686"
       spawnProtection: 4
       motd: "Minecraft SMP"
       memory: 5120M
