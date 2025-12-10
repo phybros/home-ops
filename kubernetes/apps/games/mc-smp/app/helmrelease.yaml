@@ -1,0 +1,42 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app mc-smp
+spec:
+  interval: 5m
+  timeout: 15m
+  chartRef:
+    kind: OCIRepository
+    name: minecraft-server-charts
+  values:
+    replicaCount: 0
+    resources:
+      requests:
+        memory: 2Gi
+      limits:
+        memory: 6Gi
+    minecraftServer:
+      eula: "TRUE"
+      type: "PAPER"
+      version: "1.21.10"
+      pvp: "default"
+      worldSaveName: smp
+      gameMode: survival
+      allowNether: true
+      difficulty: normal
+      overrideServerProperties: true
+      viewDistance: 16
+      seed: 2859222813426854686
+      spawnProtection: 4
+      motd: "Minecraft SMP"
+      memory: 5120M
+      serviceType: LoadBalancer
+      ops: "phybros,gimgam5000"
+      loadBalancerIP: 192.168.86.221
+    persistence:
+      dataDir:
+        enabled: true
+        existingClaim: *app
+    extraEnv:
+      INITIAL_ENABLED_PACKS: minecart_improvements
