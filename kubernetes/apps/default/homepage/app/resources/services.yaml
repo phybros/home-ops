@@ -3,23 +3,45 @@
 # https://gethomepage.dev/latest/configs/services
 
 - Media:
-    - radarr:
-        icon: sh-radarr.webp
-        href: "https://radarr.${SECRET_DOMAIN}"
-        namespace: default
-        app: radarr
-        # widget:
-        #   type: radarr
-        #   url: http://radarr.default.svc:80
-        #   key: {{HOMEPAGE_VAR_RADARR_API_KEY}}
-        #   enableQueue: true
-    - sonarr:
-        icon: sh-sonarr.webp
-        href: "https://sonarr.${SECRET_DOMAIN}"
-        namespace: default
-        app: sonarr
-        # widget:
-        #   type: sonarr
-        #   url: http://sonarr.default.svc:80
-        #   key: {{HOMEPAGE_VAR_SONARR_API_KEY}}
-        #   enableQueue: true
+        - Movies:
+                icon: sh-radarr.webp
+                href: "https://radarr.${SECRET_DOMAIN}"
+                widget:
+                      type: radarr
+                      url: http://radarr.default.svc:8787
+                      key: "${RADARR_API_TOKEN}"
+        - TV:
+                icon: sh-sonarr.webp
+                href: "https://sonarr.${SECRET_DOMAIN}"
+                widget:
+                      type: sonarr
+                      url: http://sonarr.default.svc:8787
+                      key: "${SONARR_API_TOKEN}"
+        - SABnzbd:
+                icon: sh-sabnzbd.webp
+                href: "http://vault.local:30055"
+                widget:
+                      type: sabnzbd
+                      url: http://vault.local:30055
+                      key: "${SABNZBD_API_KEY}"
+- 🏡:
+        - Home Assistant:
+                icon: sh-home-assistant.webp
+                href: "http://192.168.86.212:8123/lovelace-hjbjhbjh/0"
+        - ESPHome:
+                icon: sh-esphome.webp
+                href: "https://esphome.${SECRET_DOMAIN}"
+        - App Daemon:
+                icon: sh-daemon-sync.webp
+                href: "https://appdaemon.${SECRET_DOMAIN}"
+
+- 🤓:
+        - Grafana:
+                icon: sh-grafana.webp
+                href: "https://grafana.${SECRET_DOMAIN}"
+        - Rook:
+                icon: sh-ceph.webp
+                href: "https://rook.${SECRET_DOMAIN}"
+        - Alertmanager:
+                icon: sh-prometheus.webp
+                href: "https://alertmanager.${SECRET_DOMAIN}"

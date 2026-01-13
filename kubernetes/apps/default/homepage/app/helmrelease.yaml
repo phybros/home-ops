@@ -21,7 +21,10 @@ spec:
       namespace: network
   values:
     controllers:
-      echo:
+      app:
+        replicas: 1
+        annotations:
+          reloader.stakater.com/auto: "true"
         strategy: RollingUpdate
         containers:
           app:
@@ -29,7 +32,7 @@ spec:
               repository: ghcr.io/gethomepage/homepage
               tag: v1.8.0@sha256:7dc099d5c6ec7fc945d858218565925b01ff8a60bcbfda990fc680a8b5cd0b6e
             env:
-              HOMEPAGE_ALLOWED_HOSTS: "${SECRET_DOMAIN}"
+              HOMEPAGE_ALLOWED_HOSTS: "*"
               NODE_OPTIONS: "--max-http-header-size=65536"
               TZ: America/Toronto
               PUID: 1000
@@ -47,11 +50,6 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 64Mi
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -74,7 +72,7 @@ spec:
         parentRefs:
           - name: external
             namespace: kube-system
-            sectionName: https
+            sectionName: httpsroot
         rules:
           - backendRefs:
               - identifier: app
@@ -85,4 +83,8 @@ spec:
         name: homepage-config
         globalMounts:
           - path: /app/config
-
+      logs:
+        type: emptyDir
+        sizeLimit: 100Mi
+        globalMounts:
+          - path: /app/config/logs
