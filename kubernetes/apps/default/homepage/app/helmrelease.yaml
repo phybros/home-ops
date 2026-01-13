@@ -32,6 +32,8 @@ spec:
               HOMEPAGE_ALLOWED_HOSTS: "${SECRET_DOMAIN}"
               NODE_OPTIONS: "--max-http-header-size=65536"
               TZ: America/Toronto
+              PUID: 1000
+              PGID: 1000
             probes:
               liveness: &probes
                 enabled: true
@@ -53,8 +55,10 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 65534
-        runAsGroup: 65534
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         ports:
