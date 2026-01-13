@@ -19,10 +19,10 @@
                       key: "${SONARR_API_TOKEN}"
         - SABnzbd:
                 icon: sh-sabnzbd.webp
-                href: "http://vault.local:30055"
+                href: "http://vault.local:30055/apps/sabnzbd/"
                 widget:
                       type: sabnzbd
-                      url: http://vault.local:30055
+                      url: http://192.168.86.200:30055/apps/sabnzbd/
                       key: "${SABNZBD_API_KEY}"
 - 🏡:
         - Home Assistant:
