@@ -1,0 +1,25 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/latest/configs/services
+
+- Media:
+    - radarr:
+        icon: sh-radarr.webp
+        href: "https://radarr.${SECRET_DOMAIN}"
+        namespace: default
+        app: radarr
+        # widget:
+        #   type: radarr
+        #   url: http://radarr.default.svc:80
+        #   key: {{HOMEPAGE_VAR_RADARR_API_KEY}}
+        #   enableQueue: true
+    - sonarr:
+        icon: sh-sonarr.webp
+        href: "https://sonarr.${SECRET_DOMAIN}"
+        namespace: default
+        app: sonarr
+        # widget:
+        #   type: sonarr
+        #   url: http://sonarr.default.svc:80
+        #   key: {{HOMEPAGE_VAR_SONARR_API_KEY}}
+        #   enableQueue: true
