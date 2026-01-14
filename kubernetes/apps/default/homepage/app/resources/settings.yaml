@@ -2,9 +2,9 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/latest/configs/settings
 
-title: 🏠
+title: "🏠 ${SECRET_DOMAIN} Homepage"
 headerStyle: clean
 layout:
-  Media:
+  🍿 Media:
     style: row
     columns: 3

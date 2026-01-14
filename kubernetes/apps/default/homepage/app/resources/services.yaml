@@ -2,7 +2,7 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/latest/configs/services
 
-- Media:
+- 🍿 Media:
         - Movies:
                 icon: sh-radarr.webp
                 href: "https://radarr.${SECRET_DOMAIN}"
@@ -24,7 +24,7 @@
                       type: sabnzbd
                       url: http://192.168.86.200:30055/apps/sabnzbd/
                       key: "${SABNZBD_API_KEY}"
-- 🏡:
+- 🏡 Smart Home:
         - Home Assistant:
                 icon: sh-home-assistant.webp
                 href: "http://192.168.86.212:8123/lovelace-hjbjhbjh/0"
@@ -35,7 +35,7 @@
                 icon: sh-daemon-sync.webp
                 href: "https://appdaemon.${SECRET_DOMAIN}"
 
-- 🤓:
+- 🤓 Nerd Stuff:
         - Grafana:
                 icon: sh-grafana.webp
                 href: "https://grafana.${SECRET_DOMAIN}"
