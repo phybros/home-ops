@@ -8,5 +8,4 @@ components:
 resources:
   - ./factorio/ks.yaml
   - ./mc-forever/ks.yaml
-  - ./mc-smp/ks.yaml
   - ./vintagestory/ks.yaml
