@@ -15,7 +15,7 @@ spec:
       requests:
         memory: 2Gi
       limits:
-        memory: 6Gi
+        memory: 4500Mi
     minecraftServer:
       eula: "TRUE"
       type: "PAPER"
@@ -30,7 +30,7 @@ spec:
       difficulty: "normal"
       icon: "https://minecraft.wiki/images/Creeper_Head_%28S%29_JE1.png"
       motd: "Hello!"
-      memory: 5120M
+      memory: 4096M
       serviceType: LoadBalancer
       loadBalancerIP: 192.168.86.225
       extraPorts:
