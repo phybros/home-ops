@@ -26,7 +26,7 @@ spec:
       maxPlayers: 10
       whitelist: "phybros,gimgam5000"
       ops: "phybros"
-      viewDistance: 10
+      viewDistance: 20
       difficulty: "normal"
       icon: "https://minecraft.wiki/images/Creeper_Head_%28S%29_JE1.png"
       motd: "\u00a7b\u00a7lCreate: Aeronautics"
