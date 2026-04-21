@@ -22,6 +22,7 @@ spec:
       version: "1.21.1"
       gameMode: survival
       levelSeed: -2774091440515991285
+      worldSaveName: "world-new"
       overrideServerProperties: true
       maxPlayers: 10
       whitelist: "phybros,gimgam5000"
