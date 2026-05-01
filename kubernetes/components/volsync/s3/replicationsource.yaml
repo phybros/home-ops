@@ -6,7 +6,7 @@ metadata:
 spec:
   sourcePVC: "${APP}"
   trigger:
-    schedule: "${VOLSYNC_MINUTE:=30} 07 * * *"
+    schedule: "${VOLSYNC_MINUTE:=30} ${VOLSYNC_HOUR:=07} * * *"
   restic:
     copyMethod: "${VOLSYNC_COPYMETHOD:=Snapshot}"
     pruneIntervalDays: 14
