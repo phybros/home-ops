@@ -21,8 +21,8 @@ spec:
       type: "NEOFORGE"
       version: "1.21.1"
       gameMode: survival
-      levelSeed: -2774091440515991285
-      worldSaveName: "world-4-30"
+      levelSeed: "-2774091440515991285"
+      worldSaveName: "world2"
       overrideServerProperties: true
       maxPlayers: 10
       whitelist: "phybros,gimgam5000"
