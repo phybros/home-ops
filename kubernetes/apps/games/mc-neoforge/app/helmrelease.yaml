@@ -10,7 +10,7 @@ spec:
     kind: OCIRepository
     name: minecraft-server-charts
   values:
-    replicaCount: 1
+    replicaCount: 0
     resources:
       requests:
         memory: 2Gi
