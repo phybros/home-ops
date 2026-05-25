@@ -63,6 +63,14 @@
       ignoreTests: true,
     },
     {
+      description: "Auto-merge kube-prometheus-stack chart",
+      matchFileNames: [
+        "kubernetes/apps/observability/kube-prometheus-stack/app/ocirepository.yaml",
+      ],
+      automerge: true,
+      automergeType: "branch",
+    },
+    {
       matchUpdateTypes: ["major"],
       semanticCommitType: "feat",
       commitMessagePrefix: "{{semanticCommitType}}({{semanticCommitScope}})!:",
