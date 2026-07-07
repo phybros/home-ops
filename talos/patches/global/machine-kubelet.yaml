@@ -2,6 +2,12 @@ machine:
   kubelet:
     extraConfig:
       serializeImagePulls: false
+      # More aggressive - start at 70%
+      imageGCHighThresholdPercent: 70
+      # Stop at 60%
+      imageGCLowThresholdPercent: 60
+      # Minimum age of 5 minutes
+      imageMinimumGCAge: "5m"
     nodeIP:
       validSubnets:
         - 192.168.86.0/24
