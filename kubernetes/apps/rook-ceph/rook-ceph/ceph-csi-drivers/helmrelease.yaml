@@ -12,7 +12,7 @@ spec:
   values:
     drivers:
       cephfs:
-        enabled: false
+        enabled: true
         kernelMountOptions:
           ms_mode: prefer-crc
       nfs:
