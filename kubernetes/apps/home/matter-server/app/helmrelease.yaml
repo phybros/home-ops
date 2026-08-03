@@ -33,25 +33,6 @@ spec:
                 "ips": ["192.168.86.214/24"],
                 "gateway": ["192.168.86.1"]
               }]
-        # gotta do these shenanigans to get the pod to accept the Thread routes
-        # mostly because sysctls are forbidden on Talos (I think).
-        initContainers:
-          ipv6-ra-route-info:
-            image:
-              repository: docker.io/library/busybox
-              tag: 1.36.1
-            command:
-              - /bin/sh
-              - -ec
-              - |
-                sysctl -w net.ipv6.conf.net1.accept_ra_rt_info_max_plen=64
-            securityContext:
-              runAsNonRoot: false
-              runAsUser: 0
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop: ["ALL"]
-                add: ["NET_ADMIN"]
         containers:
           app:
             image:
@@ -78,6 +59,13 @@ spec:
         runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
+        # Allow Thread mesh routes from IPv6 Router Advertisement Route Information Options.
+        # These sysctls are allowlisted in the global Talos kubelet patch.
+        sysctls:
+          - name: net.ipv6.conf.all.accept_ra_rt_info_max_plen
+            value: "64"
+          - name: net.ipv6.conf.default.accept_ra_rt_info_max_plen
+            value: "64"
     persistence:
       config:
         existingClaim: *app
