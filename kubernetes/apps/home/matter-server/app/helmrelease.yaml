@@ -17,6 +17,8 @@ spec:
     remediation:
       retries: 3
   dependsOn:
+    - name: multus
+      namespace: kube-system
     - name: rook-ceph-cluster
       namespace: rook-ceph
   values:
