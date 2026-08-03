@@ -38,6 +38,8 @@ spec:
               tag: 1.3.3@sha256:ac537ba44a2edaaf785b818f8b7ce75cdf736539401462046f0042670bee4063
             env:
               TZ: Canada/Eastern
+            args:
+              - --primary-interface net1
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
