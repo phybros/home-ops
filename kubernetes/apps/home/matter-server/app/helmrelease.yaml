@@ -39,7 +39,7 @@ spec:
             env:
               TZ: Canada/Eastern
             args:
-              - --primary-interface net1
+              - --primary-interface=net1
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
