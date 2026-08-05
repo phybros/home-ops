@@ -62,10 +62,6 @@ spec:
         # Allow Thread mesh routes from IPv6 Router Advertisement Route Information Options.
         # These sysctls are allowlisted in the global Talos kubelet patch.
         sysctls:
-          - name: net.ipv6.conf.all.accept_ra_rt_info_max_plen
-            value: "64"
-          - name: net.ipv6.conf.default.accept_ra_rt_info_max_plen
-            value: "64"
           - name: net.ipv6.conf.net1.accept_ra_rt_info_max_plen
             value: "64"
     persistence:
