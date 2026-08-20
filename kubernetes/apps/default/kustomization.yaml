@@ -7,6 +7,7 @@ components:
   - ../../components/common
 resources:
   - ./echo/ks.yaml
+  - ./calibre/ks.yaml
   - ./iperf3/ks.yaml
   - ./inventorio/ks.yaml
   - ./ollama/ks.yaml
