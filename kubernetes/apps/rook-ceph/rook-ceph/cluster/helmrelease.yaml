@@ -18,6 +18,9 @@ spec:
     remediation:
       retries: 3
   values:
+    cephImage:
+      repository: quay.io/ceph/ceph
+      tag: v20.2.4
     monitoring:
       enabled: true
       createPrometheusRules: true
