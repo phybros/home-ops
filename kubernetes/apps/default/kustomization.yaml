@@ -13,7 +13,6 @@ resources:
   - ./karakeep/ks.yaml
   - ./plex/ks.yaml
   - ./tautulli/ks.yaml
-  - ./sabnzbd/ks.yaml
   - ./radarr/ks.yaml
   - ./sonarr/ks.yaml
   - ./overseerr/ks.yaml
