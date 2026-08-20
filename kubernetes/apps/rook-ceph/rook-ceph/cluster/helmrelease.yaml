@@ -22,8 +22,8 @@ spec:
       repository: quay.io/ceph/ceph
       tag: v20.2.4
     monitoring:
-      enabled: true
-      createPrometheusRules: true
+      enabled: false
+      createPrometheusRules: false
     toolbox:
       enabled: true
     route:
