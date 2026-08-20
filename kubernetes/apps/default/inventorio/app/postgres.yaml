@@ -4,7 +4,7 @@ kind: Cluster
 metadata:
   name: inventorio-postgres
 spec:
-  instances: 1
+  instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:18
   storage:
     storageClass: ceph-block
