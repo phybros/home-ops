@@ -22,7 +22,7 @@ spec:
           app:
             image:
               repository: lscr.io/linuxserver/calibre-web
-              tag: 0.6.27
+              tag: 5.33.2
             env:
               TZ: "America/Toronto"
               PUID: "1000"
