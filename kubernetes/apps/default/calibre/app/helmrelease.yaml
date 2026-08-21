@@ -28,6 +28,7 @@ spec:
               PUID: 1000
               PGID: 1000
               HARDCOVER_TOKEN: "${SECRET_HARDCOVER_API_TOKEN}"
+              NETWORK_SHARE_MODE: "true"
             probes:
               liveness: &probes
                 enabled: true
