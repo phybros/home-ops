@@ -21,8 +21,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/crocodilestick/calibre-web-automated
-              tag: v4.0.6
+              repository: ghcr.io/new-usemame/calibre-web-nextgen
+              tag: v4.1.38
             env:
               TZ: "America/Toronto"
               PUID: 1000
