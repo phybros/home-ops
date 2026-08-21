@@ -87,11 +87,21 @@ spec:
           osdsPerDevice: "1"
       security:
         cephx:
-          csi:
-            keyType: aes
           daemon:
             keyGeneration: 2
             keyRotationPolicy: KeyGeneration
+      ### Required until all legacy keys can be rotated.
+      ### This requires Linux kernel 7 so Talos 1.15
+      healthCheck:
+        muteHealthWarning:
+          AUTH_INSECURE_ROTATING_SERVICE_KEY_TYPE:
+            policy: mute
+          AUTH_INSECURE_CLIENT_KEY_TYPE:
+            policy: mute
+          AUTH_INSECURE_KEYS_ALLOWED:
+            policy: mute
+          AUTH_INSECURE_KEYS_CREATABLE:
+            policy: mute
     cephBlockPools:
       - name: ceph-blockpool
         spec:
