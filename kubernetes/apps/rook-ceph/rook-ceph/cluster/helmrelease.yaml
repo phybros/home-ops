@@ -85,6 +85,13 @@ spec:
         devicePathFilter: /dev/disk/by-id/nvme-CT1000P310SSD8_.*
         config:
           osdsPerDevice: "1"
+      security:
+        cephx:
+          csi:
+            keyType: aes
+          daemon:
+            keyGeneration: 2
+            keyRotationPolicy: KeyGeneration
     cephBlockPools:
       - name: ceph-blockpool
         spec:
