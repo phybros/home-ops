@@ -50,6 +50,8 @@ spec:
         fsGroupChangePolicy: "Always"
     service:
       app:
+        type: LoadBalancer
+        loadBalancerIP: 192.168.86.219
         ports:
           http:
             port: &port 8083
