@@ -29,6 +29,7 @@ spec:
               RADARR__PORT: &port 8787
               RADARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_DOMAIN}"
               RADARR__LOG_LEVEL: info
+              RADARR__SERVER__ALLOWEDHOSTS: "{{ .Release.Name }}.${SECRET_DOMAIN},{{ .Release.Name }}.default.svc.cluster.local,{{ .Release.Name }}"
             probes:
               liveness: &probes
                 enabled: true
