@@ -30,6 +30,7 @@ spec:
               SONARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_DOMAIN}"
               SONARR__LOG_LEVEL: info
               SONARR__SERVER__ALLOWEDHOSTS: "{{ .Release.Name }}.${SECRET_DOMAIN},{{ .Release.Name }}.default.svc.cluster.local,{{ .Release.Name }}"
+              SONARR__SERVER__TRUSTEDNETWORKS: 10.42.0.0/16
             probes:
               liveness: &probes
                 enabled: true
