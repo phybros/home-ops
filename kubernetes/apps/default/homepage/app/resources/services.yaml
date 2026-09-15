@@ -8,14 +8,14 @@
                     href: "https://radarr.${SECRET_DOMAIN}"
                     widget:
                             type: radarr
-                            url: http://radarr.default.svc:8787
+                            url: http://radarr:8787
                             key: "${RADARR_API_TOKEN}"
           - TV:
                     icon: sh-sonarr.webp
                     href: "https://sonarr.${SECRET_DOMAIN}"
                     widget:
                             type: sonarr
-                            url: http://sonarr.default.svc:8787
+                            url: http://sonarr:8787
                             key: "${SONARR_API_TOKEN}"
           - SABnzbd:
                     icon: sh-sabnzbd.webp
