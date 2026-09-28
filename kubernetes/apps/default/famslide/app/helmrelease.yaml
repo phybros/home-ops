@@ -32,19 +32,25 @@ spec:
               ICLOUD_ALBUM_URL: "${SECRET_FAMSLIDE_ALBUM_URL}"
             probes:
               liveness:
-                httpGet:
-                  path: /
-                  port: 8080
-                periodSeconds: 20
-                timeoutSeconds: 2
-                failureThreshold: 3
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 8080
+                  periodSeconds: 20
+                  timeoutSeconds: 2
+                  failureThreshold: 3
               readiness:
-                httpGet:
-                  path: /api/scenes
-                  port: 8080
-                periodSeconds: 10
-                timeoutSeconds: 2
-                failureThreshold: 3
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/scenes
+                    port: 8080
+                  periodSeconds: 10
+                  timeoutSeconds: 2
+                  failureThreshold: 3
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
