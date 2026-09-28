@@ -18,3 +18,4 @@ resources:
   - ./sonarr/ks.yaml
   - ./overseerr/ks.yaml
   - ./homepage/ks.yaml
+  - ./famslide/ks.yaml
