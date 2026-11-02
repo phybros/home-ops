@@ -19,3 +19,4 @@ resources:
   - ./overseerr/ks.yaml
   - ./homepage/ks.yaml
   - ./famslide/ks.yaml
+  - ./profilarr/ks.yaml
