@@ -30,7 +30,7 @@ spec:
               tag: v0.0.6
             env:
               ICLOUD_ALBUM_URL: "${SECRET_FAMSLIDE_ALBUM_URL}"
-              SLIDESHOW_INTERVAL: "30s"
+              SLIDESHOW_INTERVAL: "60s"
             probes:
               liveness:
                 enabled: true
