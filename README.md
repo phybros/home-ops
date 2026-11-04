@@ -20,6 +20,15 @@ I also use:
 - Dependency automation w/ [Renovate](https://www.mend.io/renovate)
 - Flux `HelmRelease` and `Kustomization` diffs w/ [flux-local](https://github.com/allenporter/flux-local)
 
+## External DNS updates
+
+The chart URL and version in `kubernetes/apps/network/cloudflare-dns/app/helmrelease.yaml`
+are shared by Flux and bootstrap. Bootstrap installs the CRDs bundled with that chart;
+Flux updates them on chart upgrades using `install.crds: CreateReplace` and
+`upgrade.crds: CreateReplace`. Merge Renovate updates to the chart's `OCIRepository`
+tag to update external-dns and its bundled CRDs together. There is no separate
+external-dns CRD release URL to update in the bootstrap script.
+
 ## 🤝 Thanks
 
 Thanks to all the people who donate their time to the [Home Operations](https://discord.gg/home-operations) Discord community. A lot of inspiration for my cluster comes from the people that have shared their clusters using the [k8s-at-home](https://github.com/topics/k8s-at-home) GitHub topic. Be sure to check out the awesome [Kubesearch](http://kubesearch.dev) tool for ideas on how to deploy applications or get ideas on what you can deploy.

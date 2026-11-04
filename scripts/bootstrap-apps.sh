@@ -88,9 +88,21 @@ function apply_sops_secrets() {
 function apply_crds() {
     log debug "Applying CRDs"
 
+    # Use the same external-dns chart as Flux; Flux manages subsequent CRD updates.
+    local -r external_dns_file="${ROOT_DIR}/kubernetes/apps/network/cloudflare-dns/app/helmrelease.yaml"
+    local external_dns_chart external_dns_version
+    external_dns_chart=$(yq eval-all --exit-status 'select(.kind == "OCIRepository" and .metadata.name == "cloudflare-dns") | .spec.url' "${external_dns_file}")
+    external_dns_version=$(yq eval-all --exit-status 'select(.kind == "OCIRepository" and .metadata.name == "cloudflare-dns") | .spec.ref.tag' "${external_dns_file}")
+
+    if helm show crds "${external_dns_chart}" --version "${external_dns_version}" \
+        | kubectl apply --server-side --filename -;
+    then
+        log info "External DNS CRDs applied" "version=${external_dns_version}"
+    else
+        log error "Failed to apply External DNS CRDs"
+    fi
+
     local -r crds=(
-        # renovate: datasource=github-releases depName=kubernetes-sigs/external-dns
-        https://raw.githubusercontent.com/kubernetes-sigs/external-dns/refs/tags/v0.22.0/config/crd/standard/dnsendpoints.externaldns.k8s.io.yaml
         # renovate: datasource=github-releases depName=kubernetes-sigs/gateway-api
         https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.3/experimental-install.yaml
         # renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator
@@ -129,7 +141,7 @@ function sync_helm_releases() {
 
 function main() {
     check_env KUBECONFIG TALOSCONFIG
-    check_cli helmfile kubectl kustomize sops talhelper yq
+    check_cli helm helmfile kubectl kustomize sops talhelper yq
 
     # Apply resources and Helm releases
     wait_for_nodes
