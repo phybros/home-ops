@@ -6,6 +6,7 @@ namespace: default
 components:
   - ../../components/common
 resources:
+  - ./bindery/ks.yaml
   - ./echo/ks.yaml
   - ./calibre/ks.yaml
   - ./iperf3/ks.yaml
