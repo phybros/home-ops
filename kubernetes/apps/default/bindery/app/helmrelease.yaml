@@ -32,7 +32,7 @@ spec:
               BINDERY_LOG_LEVEL: info
               BINDERY_LIBRARY_DIR: /media/books/bindery
               BINDERY_AUDIOBOOK_DIR: /media/audiobooks
-              BINDERY_DOWNLOAD_DIR: /media/temp/completed/books
+              BINDERY_DOWNLOAD_DIR: /media/temp/complete/books
             probes:
               liveness: &probes
                 enabled: true
