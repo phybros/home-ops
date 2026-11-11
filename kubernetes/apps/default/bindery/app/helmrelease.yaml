@@ -23,7 +23,7 @@ spec:
           app:
             image:
               repository: ghcr.io/vavallee/bindery
-              tag: 1.48.0
+              tag: v1.50.0
             env:
               TZ: "America/Toronto"
               BINDERY_PORT: &port 8787
