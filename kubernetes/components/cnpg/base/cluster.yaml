@@ -4,7 +4,7 @@ kind: Cluster
 metadata:
   name: "${APP}-postgres"
 spec:
-  instances: ${CNPG_INSTANCES:=3}
+  instances: ${CNPG_INSTANCES:=1}
   imageName: ghcr.io/cloudnative-pg/postgresql:${CNPG_POSTGRES_VERSION:=18}
   storage:
     storageClass: "${CNPG_STORAGE_CLASS:=ceph-block}"
