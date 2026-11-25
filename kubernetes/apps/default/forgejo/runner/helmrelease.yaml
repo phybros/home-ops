@@ -1,0 +1,142 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app forgejo-runner
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      forgejo-runner:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          # Writes /data/.runner from the secret shared with the Forgejo server,
+          # which registers the same secret in its bootstrap container.
+          register:
+            image: &image
+              repository: code.forgejo.org/forgejo/runner
+              tag: 13.2.2
+            env:
+              FORGEJO_RUNNER_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: forgejo-secret
+                    key: FORGEJO_RUNNER_SECRET
+            workingDir: /data
+            command: ["forgejo-runner"]
+            args:
+              - create-runner-file
+              - --instance
+              - http://forgejo-app.default.svc.cluster.local:3000
+              - --name
+              - forgejo-runner
+              - --secret
+              - $(FORGEJO_RUNNER_SECRET)
+            securityContext: &runnerSecurityContext
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 1000
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+        containers:
+          app:
+            image: *image
+            command: ["forgejo-runner"]
+            args: ["daemon", "--config", "/config/config.yaml"]
+            env:
+              DOCKER_HOST: tcp://localhost:2376
+              DOCKER_TLS_VERIFY: "1"
+              DOCKER_CERT_PATH: /certs/client
+            securityContext: *runnerSecurityContext
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
+          dind:
+            image:
+              repository: docker.io/library/docker
+              tag: 29.10.1-dind
+            env:
+              DOCKER_TLS_CERTDIR: /certs
+            securityContext:
+              privileged: true
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: ["docker", "info"]
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 8Gi
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    configMaps:
+      config:
+        data:
+          config.yaml: |
+            log:
+              level: info
+            runner:
+              file: /data/.runner
+              capacity: 2
+              timeout: 3h
+              labels:
+                - docker:docker://data.forgejo.org/oci/node:22-bookworm
+                - ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:act-24.04
+            cache:
+              enabled: true
+              dir: /data/cache
+            container:
+              network: ""
+              privileged: false
+              docker_host: "-"
+    persistence:
+      config:
+        type: configMap
+        identifier: config
+        advancedMounts:
+          forgejo-runner:
+            app:
+              - path: /config
+                readOnly: true
+      data:
+        type: emptyDir
+        advancedMounts:
+          forgejo-runner:
+            register:
+              - path: /data
+            app:
+              - path: /data
+      certs:
+        type: emptyDir
+        advancedMounts:
+          forgejo-runner:
+            app:
+              - path: /certs
+                readOnly: true
+            dind:
+              - path: /certs
+      docker:
+        type: emptyDir
+        advancedMounts:
+          forgejo-runner:
+            dind:
+              - path: /var/lib/docker

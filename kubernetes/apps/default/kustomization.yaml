@@ -20,4 +20,5 @@ resources:
   - ./overseerr/ks.yaml
   - ./homepage/ks.yaml
   - ./famslide/ks.yaml
+  - ./forgejo/ks.yaml
   - ./profilarr/ks.yaml

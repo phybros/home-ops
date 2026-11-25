@@ -1,0 +1,181 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app forgejo
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      forgejo:
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image: &image
+              repository: code.forgejo.org/forgejo/forgejo
+              tag: 17.0.2-rootless
+            env: &env
+              TZ: America/Toronto
+              # Server
+              FORGEJO__server__DOMAIN: "code.${SECRET_DOMAIN}"
+              FORGEJO__server__ROOT_URL: "https://code.${SECRET_DOMAIN}/"
+              FORGEJO__server__HTTP_PORT: &port 3000
+              FORGEJO__server__START_SSH_SERVER: true
+              FORGEJO__server__SSH_DOMAIN: "git.${SECRET_DOMAIN}"
+              FORGEJO__server__SSH_PORT: 22
+              FORGEJO__server__SSH_LISTEN_PORT: &sshPort 2222
+              FORGEJO__server__LFS_START_SERVER: true
+              # LFS over SSH, so pushes don't need HTTPS through Cloudflare Access
+              FORGEJO__server__LFS_ALLOW_PURE_SSH: true
+              # Database
+              FORGEJO__database__DB_TYPE: postgres
+              FORGEJO__database__HOST: forgejo-postgres-rw.default.svc.cluster.local:5432
+              FORGEJO__database__NAME: forgejo
+              FORGEJO__database__SSL_MODE: disable
+              FORGEJO__database__USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: forgejo-postgres-app
+                    key: username
+              FORGEJO__database__PASSWD:
+                valueFrom:
+                  secretKeyRef:
+                    name: forgejo-postgres-app
+                    key: password
+              # Auth: trust the Cloudflare Access identity header. Users are matched
+              # by email; auto-registration stays off because emails aren't valid usernames.
+              FORGEJO__security__INSTALL_LOCK: true
+              FORGEJO__security__REVERSE_PROXY_AUTHENTICATION_USER: Cf-Access-Authenticated-User-Email
+              FORGEJO__security__REVERSE_PROXY_AUTHENTICATION_EMAIL: Cf-Access-Authenticated-User-Email
+              FORGEJO__security__REVERSE_PROXY_TRUSTED_PROXIES: 10.42.0.0/16
+              FORGEJO__service__ENABLE_REVERSE_PROXY_AUTHENTICATION: true
+              FORGEJO__service__ENABLE_REVERSE_PROXY_EMAIL: true
+              FORGEJO__service__ENABLE_REVERSE_PROXY_AUTO_REGISTRATION: false
+              FORGEJO__service__DISABLE_REGISTRATION: true
+              FORGEJO__service__REQUIRE_SIGNIN_VIEW: true
+              # Actions
+              FORGEJO__actions__ENABLED: true
+              # Mail (Migadu, implicit TLS)
+              FORGEJO__mailer__ENABLED: true
+              FORGEJO__mailer__PROTOCOL: smtps
+              FORGEJO__mailer__SMTP_ADDR: smtp.migadu.com
+              FORGEJO__mailer__SMTP_PORT: 465
+              FORGEJO__mailer__USER: "code@${SECRET_DOMAIN}"
+              FORGEJO__mailer__PASSWD: "${SECRET_FORGEJO_SMTP_PASSWORD}"
+              FORGEJO__mailer__FROM: "Forgejo <code@${SECRET_DOMAIN}>"
+              FORGEJO__log__LEVEL: Info
+            envFrom: &envFrom
+              - secretRef:
+                  name: forgejo-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/healthz
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/healthz
+                    port: *port
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 50m
+              limits:
+                memory: 1Gi
+          # Idempotent one-time setup once the server is healthy: creates the admin
+          # user (matched to Cloudflare Access by email) and registers the Actions
+          # runner from the shared secret. $(VAR) is expanded by the kubelet.
+          bootstrap:
+            image: *image
+            env: *env
+            envFrom: *envFrom
+            command: ["/bin/sh", "-c"]
+            args:
+              - |
+                until wget -q -O /dev/null http://localhost:3000/api/healthz; do sleep 5; done
+                forgejo admin user create --admin \
+                  --username "$(FORGEJO_ADMIN_USERNAME)" \
+                  --email "$(FORGEJO_ADMIN_EMAIL)" \
+                  --random-password --must-change-password=false \
+                  || echo "admin user already exists"
+                forgejo forgejo-cli actions register \
+                  --name forgejo-runner \
+                  --secret "$(FORGEJO_RUNNER_SECRET)"
+                echo "bootstrap complete"
+                exec sleep infinity
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 5m
+              limits:
+                memory: 256Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: forgejo
+        ports:
+          http:
+            port: *port
+      ssh:
+        controller: forgejo
+        type: LoadBalancer
+        loadBalancerIP: 192.168.86.218
+        annotations:
+          # k8s-gateway serves this name on the LAN only; not published to Cloudflare
+          coredns.io/hostname: "git.${SECRET_DOMAIN}"
+        ports:
+          ssh:
+            port: 22
+            targetPort: *sshPort
+    route:
+      app:
+        hostnames: ["code.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+    persistence:
+      data:
+        existingClaim: *app
+        advancedMounts:
+          forgejo:
+            app: &mounts
+              - path: /var/lib/gitea
+                subPath: data
+              - path: /etc/gitea
+                subPath: config
+            bootstrap: *mounts
