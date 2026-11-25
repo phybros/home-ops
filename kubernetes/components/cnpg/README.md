@@ -44,6 +44,7 @@ Set these optional variables in `postBuild.substitute` to override the defaults:
 | `CNPG_BACKUP_RETENTION` | `7d` | Barman recovery window, not an exact backup count |
 | `CNPG_BACKUP_COMPRESSION` | `gzip` | Base backup compression |
 | `CNPG_WAL_COMPRESSION` | `gzip` | Transaction log compression |
+| `CNPG_SERVER_NAME` | `${APP}-postgres` | Archive name backups are written under; only changed when recovering |
 
 The first base backup is requested immediately when the schedule is created.
 WAL archiving runs continuously because Barman's online backups require it, even
@@ -56,12 +57,24 @@ Those credentials need list/read/write/delete access to the CNPG prefix as well
 as the existing Restic repositories. No Restic password is used by Barman.
 
 Archives are stored under
-`${SECRET_CNPG_BACKUP_PATH}/${CNPG_NAMESPACE}/${APP}-postgres/`; Barman adds the
-cluster-name directory. Each cluster has its own `ObjectStore` and retention.
+`${SECRET_CNPG_BACKUP_PATH}/${CNPG_NAMESPACE}/${CNPG_SERVER_NAME}/`; Barman adds the
+server-name directory, which defaults to the cluster name. Each cluster has its
+own `ObjectStore` and retention.
 
 The Barman plugin is installed centrally in `cnpg-system`. Its Flux Kustomization
 waits for CNPG and cert-manager; applications wait for Barman and Ceph before
 reconciling their database resources.
+
+## Layout
+
+| Path | Contents |
+| --- | --- |
+| `base/` | The `Cluster` with `initdb` bootstrap |
+| `backup/` | `ObjectStore`, credentials, `ScheduledBackup`, and the Barman plugin on the Cluster |
+| `.` (this directory) | `base` + `backup`; what apps normally include |
+| `without-backup/` | `base` only |
+| `recovery/` | `base` + `backup`, bootstrapped from an existing archive |
+| `recovery-target/` | Add-on for `recovery/` that stops at a point in time |
 
 ## Explicit opt-out
 
@@ -96,14 +109,59 @@ kubectl -n default get backups.postgresql.cnpg.io
 
 ## Recovery
 
-Backups do not change the default bootstrap behavior: the component creates an
-empty database when no existing database volumes survive. For a disaster
-recovery, restore a new cluster using `bootstrap.recovery` and an
-`externalClusters` entry referencing the original `ObjectStore` and server name.
-Replace `bootstrap.initdb`; do not leave both bootstrap methods configured.
-Supply the original database and owner and restore or reset application
-credentials. Use a separate archive location or server name for the recovered
-cluster's future backups so it cannot overwrite the source archive.
+The main component bootstraps with `initdb`: if the Cluster and its volumes are
+lost, Flux recreates an **empty** database. Bootstrap settings only apply when a
+Cluster is created, so restoring means switching to the `recovery` variant and
+letting Flux create the Cluster again.
+
+1. Find the archive to restore from: the app's current `CNPG_SERVER_NAME`
+   (`${APP}-postgres` unless it was changed by an earlier recovery). Confirm it
+   has at least one completed base backup; WAL alone cannot be restored.
+2. Edit the app's `ks.yaml`:
+
+   ```yaml
+   components:
+     - ../../../../components/cnpg/recovery   # was ../../../../components/cnpg
+   postBuild:
+     substitute:
+       # ...existing APP / CNPG_* values unchanged...
+       CNPG_RECOVERY_SERVER_NAME: example-postgres   # archive to restore from
+       CNPG_SERVER_NAME: example-postgres-r2         # NEW name for future backups
+   ```
+
+   `CNPG_SERVER_NAME` **must differ** from `CNPG_RECOVERY_SERVER_NAME`, otherwise
+   the restored cluster writes into the archive it was restored from. Suffix
+   `-r2`, `-r3`, ... on each recovery.
+3. Suspend the Flux Kustomization and remove the broken Cluster so it is
+   recreated from the new bootstrap (CNPG deletes its PVCs with it). The app
+   cannot connect meanwhile: `${APP}-postgres-rw` has no endpoints until the
+   restore finishes.
+
+   ```sh
+   flux suspend ks example -n <namespace>
+   kubectl -n <namespace> delete cluster example-postgres
+   ```
+
+4. Push the change, then `flux resume ks example -n <namespace>`. CNPG restores
+   the latest base backup and replays WAL to the end of the archive. Watch with
+   `kubectl -n <namespace> get cluster example-postgres -w`.
+5. Check the app's data. The `${APP}-postgres-app` secret is regenerated, so
+   apps reading it pick up the new password automatically.
+
+Afterwards, switch back to the main component and drop
+`CNPG_RECOVERY_SERVER_NAME` (the bootstrap change is accepted on a running
+Cluster and ignored). Leaving the recovery component in place would make the
+next rebuild restore from the old, stale archive. **Keep `CNPG_SERVER_NAME`** at
+the new value: it is where backups now live and what the next recovery reads. The old archive is no longer pruned by retention; delete it from S3 once
+the new archive has a completed base backup and you no longer need it.
+
+For a point-in-time restore (e.g. undoing a bad migration), also list
+`../../../../components/cnpg/recovery-target` **after** the recovery component
+and set `CNPG_RECOVERY_TARGET_TIME` (RFC 3339, e.g. `"2026-11-25T12:00:00Z"`).
+WAL replay stops there instead of at the end of the archive. Remove it along
+with the recovery component once the cluster is up. Patches in the app's `kustomization.yaml` or the Flux
+Kustomization's `spec.patches` do not reach the Cluster, because the component
+is added after them.
 
 See the [CNPG recovery guide](https://cloudnative-pg.io/docs/1.30/recovery/) and
 [Barman plugin usage](https://cloudnative-pg.io/plugin-barman-cloud/docs/usage/).

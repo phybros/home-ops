@@ -1,0 +1,32 @@
+---
+# Same as the main component (database + backups), but a newly created cluster is bootstrapped
+# from the Barman archive named ${CNPG_RECOVERY_SERVER_NAME} instead of initdb.
+# Bootstrap only runs when the Cluster is created; on an existing cluster this
+# is inert. See ../README.md#recovery.
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+components:
+  - ../base
+  - ../backup
+patches:
+  - target:
+      group: postgresql.cnpg.io
+      version: v1
+      kind: Cluster
+    patch: |-
+      - op: replace
+        path: /spec/bootstrap
+        value:
+          recovery:
+            source: recovery-source
+            database: "${CNPG_DATABASE}"
+            owner: "${CNPG_OWNER}"
+      - op: add
+        path: /spec/externalClusters
+        value:
+          - name: recovery-source
+            plugin:
+              name: barman-cloud.cloudnative-pg.io
+              parameters:
+                barmanObjectName: ${APP}-postgres
+                serverName: "${CNPG_RECOVERY_SERVER_NAME}"

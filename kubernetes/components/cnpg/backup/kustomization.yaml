@@ -1,0 +1,23 @@
+---
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+resources:
+  - ./objectstore.yaml
+  - ./scheduledbackup.yaml
+  - ./secret.yaml
+patches:
+  - target:
+      group: postgresql.cnpg.io
+      version: v1
+      kind: Cluster
+    patch: |-
+      - op: add
+        path: /spec/plugins
+        value:
+          - name: barman-cloud.cloudnative-pg.io
+            isWALArchiver: true
+            parameters:
+              barmanObjectName: ${APP}-postgres
+              # Archive name new backups and WAL are written under. Defaults to
+              # the cluster name; change it when recovering (see README).
+              serverName: "${CNPG_SERVER_NAME:=${APP}-postgres}"

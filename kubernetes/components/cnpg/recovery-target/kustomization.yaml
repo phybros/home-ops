@@ -1,0 +1,16 @@
+---
+# Point-in-time restore: list after ../recovery in a ks.yaml's components to
+# stop WAL replay at ${CNPG_RECOVERY_TARGET_TIME} instead of the archive's end.
+# See ../README.md#recovery.
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+patches:
+  - target:
+      group: postgresql.cnpg.io
+      version: v1
+      kind: Cluster
+    patch: |-
+      - op: add
+        path: /spec/bootstrap/recovery/recoveryTarget
+        value:
+          targetTime: "${CNPG_RECOVERY_TARGET_TIME}"
