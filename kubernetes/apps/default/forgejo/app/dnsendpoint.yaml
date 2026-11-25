@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/externaldns.k8s.io/dnsendpoint_v1alpha1.json
+# Public DNS-only record pointing at the LAN SSH LoadBalancer. The IP is private,
+# so SSH stays unreachable from the internet.
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: forgejo-ssh
+spec:
+  endpoints:
+    - dnsName: "git.${SECRET_DOMAIN}"
+      recordType: A
+      targets: ["192.168.86.218"]
+      providerSpecific:
+        - name: external-dns.alpha.kubernetes.io/cloudflare-proxied
+          value: "false"

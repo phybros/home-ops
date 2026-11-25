@@ -31,8 +31,9 @@ spec:
               FORGEJO__server__ROOT_URL: "https://code.${SECRET_DOMAIN}/"
               FORGEJO__server__HTTP_PORT: &port 3000
               FORGEJO__server__START_SSH_SERVER: true
-              # LAN-only SSH; clone URLs use the LoadBalancer IP directly
-              FORGEJO__server__SSH_DOMAIN: &sshIP 192.168.86.218
+              # LAN-only SSH; git.${SECRET_DOMAIN} is a DNS-only record for the
+              # LoadBalancer IP (see dnsendpoint.yaml)
+              FORGEJO__server__SSH_DOMAIN: "git.${SECRET_DOMAIN}"
               FORGEJO__server__SSH_PORT: 22
               FORGEJO__server__SSH_LISTEN_PORT: &sshPort 2222
               FORGEJO__server__LFS_START_SERVER: true
@@ -150,7 +151,7 @@ spec:
       ssh:
         controller: forgejo
         type: LoadBalancer
-        loadBalancerIP: *sshIP
+        loadBalancerIP: 192.168.86.218
         ports:
           ssh:
             port: 22
