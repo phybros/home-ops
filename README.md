@@ -13,6 +13,10 @@ I also use:
 - `kube-prometheus-stack` to gather metrics from around the cluster
 - `grafana` to visualize all the metrics from prometheus
 
+CNPG databases and their daily S3 backups are configured through the
+[shared CNPG component](kubernetes/components/cnpg/README.md). Apps only need the
+component and their database settings in `ks.yaml`.
+
 **Other features include:**
 
 - Dev env managed w/ [mise](https://mise.jdx.dev/)

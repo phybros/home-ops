@@ -1,0 +1,20 @@
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: "${APP}-postgres"
+spec:
+  retentionPolicy: "${CNPG_BACKUP_RETENTION:=7d}"
+  configuration:
+    destinationPath: "${SECRET_CNPG_BACKUP_PATH}/${CNPG_NAMESPACE}"
+    s3Credentials:
+      accessKeyId:
+        name: "${APP}-postgres-backup"
+        key: AWS_ACCESS_KEY_ID
+      secretAccessKey:
+        name: "${APP}-postgres-backup"
+        key: AWS_SECRET_ACCESS_KEY
+    data:
+      compression: "${CNPG_BACKUP_COMPRESSION:=gzip}"
+    wal:
+      compression: "${CNPG_WAL_COMPRESSION:=gzip}"

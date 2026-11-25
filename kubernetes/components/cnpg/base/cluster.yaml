@@ -1,0 +1,15 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: "${APP}-postgres"
+spec:
+  instances: ${CNPG_INSTANCES:=3}
+  imageName: ghcr.io/cloudnative-pg/postgresql:${CNPG_POSTGRES_VERSION:=18}
+  storage:
+    storageClass: "${CNPG_STORAGE_CLASS:=ceph-block}"
+    size: "${CNPG_STORAGE_SIZE:=1Gi}"
+  bootstrap:
+    initdb:
+      database: "${CNPG_DATABASE}"
+      owner: "${CNPG_OWNER}"

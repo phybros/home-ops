@@ -9,8 +9,10 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/cnpg
   dependsOn:
-    - name: cloudnative-pg
+    - name: barman-cloud
       namespace: cnpg-system
     - name: rook-ceph-cluster
       namespace: rook-ceph
@@ -19,6 +21,9 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      CNPG_NAMESPACE: *namespace
+      CNPG_DATABASE: inventory
+      CNPG_OWNER: inv
     substituteFrom:
       - name: cluster-secrets
         kind: Secret

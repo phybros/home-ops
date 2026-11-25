@@ -11,8 +11,9 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
+    - ../../../../components/cnpg
   dependsOn:
-    - name: cloudnative-pg
+    - name: barman-cloud
       namespace: cnpg-system
     - name: rook-ceph-cluster
       namespace: rook-ceph
@@ -21,6 +22,9 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      CNPG_NAMESPACE: *namespace
+      CNPG_DATABASE: romm
+      CNPG_OWNER: romm
       VOLSYNC_CAPACITY: 10Gi
       VOLSYNC_MINUTE: "36"
     substituteFrom:

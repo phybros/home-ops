@@ -1,0 +1,15 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: "${APP}-postgres"
+spec:
+  # CNPG schedules include seconds; this defaults to 08:00 UTC daily.
+  schedule: "${CNPG_BACKUP_SCHEDULE:=0 0 8 * * *}"
+  immediate: true
+  backupOwnerReference: self
+  cluster:
+    name: "${APP}-postgres"
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
